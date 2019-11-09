@@ -27,6 +27,7 @@ GLuint uModelViewMatrix;
 GLuint normalMatrix;
 GLuint texCoord;
 GLuint modelMatrix;
+int sig=0;
 
 
 glm::mat4 scale[4], rot[4], trans[4];
@@ -189,29 +190,29 @@ void cursor(double radius, int Lats, int Longs)
 }
 
 
-void load_bezier_contl()
-{
-  GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
-  for(int i=bez_cnt_nodes;i<bez_contrl_idx;i++)
-  {
-    bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), true);
-    bez_cnt[i]->change_parameters(bez_contrl[i][0],bez_contrl[i][1],bez_contrl[i][2],0,0,0);
-  }
-  bez_cnt_nodes=bez_contrl_idx;
-}
-
-
-
 // void load_bezier_contl()
 // {
 //   GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
-//   for(int i=0;i<bezier_idx;i++)
+//   for(int i=bez_cnt_nodes;i<bez_contrl_idx;i++)
 //   {
-//     bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), false);
-//     bez_cnt[i]->change_parameters(bezier[i][0],bezier[i][1],bezier[i][2],0,0,0);
+//     bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), true);
+//     bez_cnt[i]->change_parameters(bez_contrl[i][0],bez_contrl[i][1],bez_contrl[i][2],0,0,0);
 //   }
-//   bez_cnt_nodes=bezier_idx;
+//   bez_cnt_nodes=bez_contrl_idx;
 // }
+
+
+
+void load_bezier_contl()
+{
+  GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
+  for(int i=0;i<bezier_idx;i++)
+  {
+    bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), false);
+    bez_cnt[i]->change_parameters(bezier[i][0],bezier[i][1],bezier[i][2],0,0,0);
+  }
+  bez_cnt_nodes=bezier_idx;
+}
 
 
 void load_bezier_lines()
@@ -226,7 +227,7 @@ void load_bezier_lines()
     v_tex_norms[line_idx]=glm::vec4(0.0);
     v_positions_bez_line[line_idx]=glm::vec4(bezier[i+1],1.0);line_idx++;
   }
-  node_line = new csX75::HNode(NULL, 1000, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_cursor), sizeof(v_tex_norms), sizeof(v_tex_line), false);
+  node_line = new csX75::HNode(NULL, 1000, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_bez_line), sizeof(v_tex_norms), sizeof(v_tex_line), false);
 }
 
 
@@ -720,18 +721,28 @@ void renderGL(void)
 
   // bez_cnt_nodes=bez_contrl_idx;
   // bez_nodes = bezier_idx;
+  if(sig==1)
+  {
   cal_bezier(3);
   load_bezier_contl();
   load_bezier_lines();
-  for(int i=0;i<bez_contrl_idx;i++)
+  sig=0;
+  }
+  // for(int i=0;i<bez_contrl_idx;i++)
+  // {
+  //   matrixStack.push_back(view_matrix);
+  //   bez_cnt[i]->render_tree();
+  //   matrixStack.pop_back();
+  // }
+  for(int i=0;i<bezier_idx;i++)
   {
     matrixStack.push_back(view_matrix);
     bez_cnt[i]->render_tree();
     matrixStack.pop_back();
   }
-  matrixStack.push_back(view_matrix);
-  node_line->render_tree();
-  matrixStack.pop_back();
+  // matrixStack.push_back(view_matrix);
+  // node_line->render_tree();
+  // matrixStack.pop_back();
   if(animation){
     if(count<5000){
       node2->tx -= 0.001;

@@ -11,6 +11,7 @@ extern glm::vec4 bezier[10000];
 extern bool enable_perspective;
 extern int camera;
 extern bool animation;
+extern int sig;
 
 extern csX75::HNode *node1, *node2, *node3,*node4, *node5, *node6, *node7, *node8, *node9, *node10, *node11,*node1e,*node2e,*node3e,*node4e,*node5e,*curr_node;
 
@@ -102,6 +103,7 @@ namespace csX75
       //   glm::vec4 temp = glm::vec4(bez_contrl[i],1.0);
       //   std::cout<<temp[0]<<" "<<temp[1]<<" "<<temp[2]<<" "<<temp[3]<<'\n';
       // }
+      sig=1;
       std::cout<<"Cube placed\n";
     }
     // else if (key == GLFW_KEY_P && action == GLFW_PRESS)
