@@ -840,7 +840,9 @@ int main(int argc, char **argv)
   //Keyboard Callback
   glfwSetKeyCallback(window, csX75::key_callback);
   //Framebuffer resize callback
+  glfwSetMouseButtonCallback(window, csX75::mouse_button_callback);
   glfwSetFramebufferSizeCallback(window, csX75::framebuffer_size_callback);
+  glfwSetCursorPosCallback(window, csX75::cursor_position_callback);
 
   // Ensure we can capture the escape key being pressed below
   glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
