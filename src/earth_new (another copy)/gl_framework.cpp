@@ -40,7 +40,16 @@ namespace csX75
     //!Resize the viewport to fit the window size - draw to entire window
     glViewport(0, 0, width, height);
   }
-  
+  void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+  {
+    if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) 
+    {
+       double xpos, ypos;
+       //getting cursor position
+       glfwGetCursorPos(window, &xpos, &ypos);
+       std::cout << "Cursor Position at (" << xpos << " : " << ypos << '\n';
+    }
+  }
   //!GLFW keyboard callback
   void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
   {
