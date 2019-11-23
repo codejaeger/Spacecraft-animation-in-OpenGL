@@ -6,19 +6,20 @@ extern GLfloat c1_xpos,c1_ypos,c1_zpos;
 extern GLfloat c1_xrot,c1_yrot,c1_zrot;
 extern GLfloat c2_xpos,c2_ypos,c2_zpos;
 extern GLfloat c2_xrot,c2_yrot,c2_zrot;
-extern int bez_contrl_idx,bezier_idx;
+extern int bez_ctrl_idx,bezier_idx;
 extern glm::vec4 bezier[10000];
 extern bool enable_perspective;
 extern int camera;
 extern bool animation;
 extern int sig;
+extern int bez_idx;
 
 extern csX75::HNode *node1, *node2, *node3,*node4, *node5, *node6, *node7, *node8, *node9, *node10, *node11,*node1e,*node2e,*node3e,*node4e,*node5e,*curr_node;
 
 const int num_vertices = 100000;
 const int num_prms = 100;
 extern glm::vec3 cur_cent;
-extern glm::vec3 bez_contrl[num_prms];
+extern glm::vec3 bez_ctrl[num_prms];
 extern glm::vec4 v_positions_box[num_vertices], v_colors_box[num_vertices], v_normals_box[num_vertices];
 extern glm::vec2 tex_coords_box[num_vertices];
 extern glm::vec4 v_positions_prop[num_vertices], v_colors_prop[num_vertices], v_normals_prop[num_vertices];
@@ -114,15 +115,17 @@ namespace csX75
     else if (key == GLFW_KEY_KP_9 && action == GLFW_PRESS)
       curr_node = node5e;
      else if(key == GLFW_KEY_P && action == GLFW_PRESS){
-      bez_contrl[bez_contrl_idx] = cur_cent;
-      bez_contrl_idx++;
-      // for(int i=0;i<bez_contrl_idx;i++)
+      //  std::cout<<"hello";
+      bez_ctrl[bez_idx] = cur_cent;
+      bez_idx++;
+      sig = 1;
+      // for(int i=0;i<bez_ctrl_idx;i++)
       // {
-      //   glm::vec4 temp = glm::vec4(bez_contrl[i],1.0);
+      //   glm::vec4 temp = glm::vec4(bez_ctrl[i],1.0);
       //   std::cout<<temp[0]<<" "<<temp[1]<<" "<<temp[2]<<" "<<temp[3]<<'\n';
       // }
-      sig=1;
-      std::cout<<"Cube placed\n";
+      // update_curve();
+      std::cout<<"Control point placed\n";
     }
     // else if (key == GLFW_KEY_P && action == GLFW_PRESS)
     //   enable_perspective = !enable_perspective;   

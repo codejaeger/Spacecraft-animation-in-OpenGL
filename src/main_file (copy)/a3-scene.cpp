@@ -40,18 +40,17 @@ glm::vec4 v_normals_cursor[curs_ver];
 glm::vec3 v_tex_cursor[curs_ver];
 
 
-glm::vec4 v_positions_bez_line[1000];
-glm::vec3 v_tex_line[1000];
-glm::vec4 v_tex_norms[1000];
+glm::vec4 v_positions_bez_line[10000];
+glm::vec3 v_tex_line[10000];
+glm::vec4 v_tex_norms[10000];
 
 int line_idx=0;
 
-const int num_parms=100;
-
-glm::vec3 bez_contrl[num_parms];
+const int max_num_ctrl_pnts=100;
+glm::vec3 bez_ctrl[max_num_ctrl_pnts];
 glm::vec3 bezier[10000];
-int bez_contrl_idx =0;
-int bezier_idx = 0;
+int bez_ctrl_idx =0;
+int bez_idx = 0;
 
 int count = 0;
 
@@ -120,22 +119,55 @@ glm::vec3 tex_coords_extra[num_vertices];
 
 
 
-void cal_bezier(float tess)
-{
-  bezier_idx=0;
-  for(int j=0;j<bez_contrl_idx;j+=3)
-  {
-  for(GLfloat i=0;i<1;i+=1.0/tess)
-  {
-    glm::vec3 p0 = bez_contrl[j],p1 = bez_contrl[j+1],p2 = bez_contrl[j+2]; 
-    glm::vec3 pt = GLfloat(pow((1-i),2))*p0 + GLfloat(2*pow((1-i),1)*i)*p1 + GLfloat(pow(i,2))*p2;
-    bezier[bezier_idx]=pt;
-    bezier_idx++;
+// void cal_bezier(float tess)
+// {
+//   bez_idx=0;
+//   for(int j=0;j<bez_ctrl_idx;j+=3)
+//   {
+//   for(GLfloat i=0;i<1;i+=1.0/tess)
+//   {
+//     glm::vec3 p0 = bez_ctrl[j],p1 = bez_ctrl[j+1],p2 = bez_ctrl[j+2]; 
+//     glm::vec3 pt = GLfloat(pow((1-i),2))*p0 + GLfloat(2*pow((1-i),1)*i)*p1 + GLfloat(pow(i,2))*p2;
+//     bezier[bez_idx]=pt;
+//     bez_idx++;
+//   }
+//   } 
+// }
+
+void update_bez_curve(void){
+  // bez_ctrl bez_idx v_positions_bez_line
+  int n = bez_idx;
+  glm::vec3 B[100][100];
+  for(int j=0;j<n;j++){
+    B[0][j] = bez_ctrl[j];
   }
-  } 
+  std::cout<<n<<"\n";
+  // for(int i=0;i<n;i++){
+  //   for(int j=0;j<3;j++){
+  //     std::cout<<bez_ctrl[i][j]<<" ";
+  //   }
+  //   std::cout<<"\n";
+  // }
+  int k=0;
+  for(float t=0.0;t<=1.0;t+=0.01){
+    for(int i=1;i<n;i++){
+      for(int j=0;j<=n-i;j++){
+        B[i][j] = B[i-1][j]*(1-t) + B[i-1][j+1]*t;
+      }
+    }
+    v_positions_bez_line[k] = glm::vec4(B[n-1][0],1);
+    v_tex_line[k]=glm::vec3(0,0,5);
+    v_tex_norms[k]=glm::vec4(0.0);
+    k++;
+  }
+  // for(int i=0;i<100;i++){
+  //   for(int j=0;j<4;j++){
+  //     std::cout<<v_positions_bez_line[i][j]<<" ";
+  //   }
+  //   std::cout<<"\n";
+  // }
+  node_line = new csX75::HNode(NULL, 100, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_bez_line), sizeof(v_tex_norms), sizeof(v_tex_line), true);
 }
-
-
 
 
 
@@ -193,12 +225,12 @@ void cursor(double radius, int Lats, int Longs)
 // void load_bezier_contl()
 // {
 //   GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
-//   for(int i=bez_cnt_nodes;i<bez_contrl_idx;i++)
+//   for(int i=bez_cnt_nodes;i<bez_ctrl_idx;i++)
 //   {
 //     bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), true);
-//     bez_cnt[i]->change_parameters(bez_contrl[i][0],bez_contrl[i][1],bez_contrl[i][2],0,0,0);
+//     bez_cnt[i]->change_parameters(bez_ctrl[i][0],bez_ctrl[i][1],bez_ctrl[i][2],0,0,0);
 //   }
-//   bez_cnt_nodes=bez_contrl_idx;
+//   bez_cnt_nodes=bez_ctrl_idx;
 // }
 
 
@@ -214,33 +246,33 @@ void cursor(double radius, int Lats, int Longs)
 // }
 
 
-void load_bezier_contl()
-{
-  GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
-  for(int i=0;i<bezier_idx;i++)
-  {
-    bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), false);
-    bez_cnt[i]->change_parameters(bezier[i][0],bezier[i][1],bezier[i][2],0,0,0);
-  }
-  bez_cnt_nodes=bezier_idx;
-}
+// void load_bezier_contl()
+// {
+//   GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
+//   for(int i=0;i<bez_idx;i++)
+//   {
+//     bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), false);
+//     bez_cnt[i]->change_parameters(bezier[i][0],bezier[i][1],bezier[i][2],0,0,0);
+//   }
+//   bez_cnt_nodes=bez_idx;
+// }
 
 
-void load_bezier_lines()
-{
-  // GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
-  line_idx=0;
-  for(int i=0;i<bezier_idx-1;i++)
-  {
-    v_tex_line[line_idx]=glm::vec3(0,0,5);
-    v_tex_norms[line_idx]=glm::vec4(0.0);
-    v_positions_bez_line[line_idx]=glm::vec4(bezier[i],1.0);line_idx++;
-    v_tex_line[line_idx]=glm::vec3(0,0,5);
-    v_tex_norms[line_idx]=glm::vec4(0.0);
-    v_positions_bez_line[line_idx]=glm::vec4(bezier[i+1],1.0);line_idx++;
-  }
-  node_line = new csX75::HNode(NULL, 2*line_idx-1, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_bez_line), sizeof(v_tex_norms), sizeof(v_tex_line), true);
-}
+// void load_bezier_lines()
+// {
+//   // GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
+//   line_idx=0;
+//   for(int i=0;i<bez_idx-1;i++)
+//   {
+//     v_tex_line[line_idx]=glm::vec3(0,0,5);
+//     v_tex_norms[line_idx]=glm::vec4(0.0);
+//     v_positions_bez_line[line_idx]=glm::vec4(bezier[i],1.0);line_idx++;
+//     v_tex_line[line_idx]=glm::vec3(0,0,5);
+//     v_tex_norms[line_idx]=glm::vec4(0.0);
+//     v_positions_bez_line[line_idx]=glm::vec4(bezier[i+1],1.0);line_idx++;
+//   }
+//   node_line = new csX75::HNode(NULL, 2*line_idx-1, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_bez_line), sizeof(v_tex_norms), sizeof(v_tex_line), true);
+// }
 
 
 
@@ -732,34 +764,35 @@ void renderGL(void)
   node4->render_tree();
   matrixStack.pop_back();
 
-  // bez_cnt_nodes=bez_contrl_idx;
-  // bez_nodes = bezier_idx;
+  // bez_cnt_nodes=bez_ctrl_idx;
+  // bez_nodes = bez_idx;
   if(sig==1)
   {
-  cal_bezier(3);
-  load_bezier_contl();
-  load_bezier_lines();
-  sig=0;
+    // std::cout<<"ok\n";
+    update_bez_curve();
+    std::cout<<"Bezier curve updated\n";
+    sig=0;
   }
-  // for(int i=0;i<bez_contrl_idx;i++)
+  // for(int i=0;i<bez_ctrl_idx;i++)
   // {
   //   matrixStack.push_back(view_matrix);
   //   bez_cnt[i]->render_tree();
   //   matrixStack.pop_back();
   // }
-  for(int i=0;i<bezier_idx;i++)
+  // for(int i=0;i<bez_idx;i++)
+  // {
+  //   matrixStack.push_back(view_matrix);
+  //   bez_cnt[i]->render_tree();
+  //   matrixStack.pop_back();
+  // }
+  // std::cout<<bez_idx<<"\n";
+  if(bez_idx>0)
   {
     matrixStack.push_back(view_matrix);
-    bez_cnt[i]->render_tree();
+    node_line->render_tree();
     matrixStack.pop_back();
   }
-  std::cout<<line_idx<<" ";
-  if(line_idx>0)
-  {
-  matrixStack.push_back(view_matrix);
-  node_line->render_tree();
-  matrixStack.pop_back();
-  }
+
   if(animation){
     if(count<5000){
       node2->tx -= 0.01;
