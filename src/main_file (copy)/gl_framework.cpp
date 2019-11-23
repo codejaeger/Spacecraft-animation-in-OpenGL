@@ -270,7 +270,7 @@ namespace csX75
           infile>>bez_ctrl[i][j];
         }
       }
-      sig = 1;
+      sig = 3;
 
       infile.close();
       std::cout<<"Trajectories loaded successfully\n";
