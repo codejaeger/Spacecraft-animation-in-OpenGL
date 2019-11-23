@@ -55,7 +55,7 @@ bool enable_culling=true;
 //Running variable to toggle wireframe/solid modelling
 bool solid=true;
 //Enable/Disable perspective view
-bool enable_perspective=true;
+bool enable_perspective=false;
 //Shader program attribs
 GLuint vPosition,vColor,vNormal;
 

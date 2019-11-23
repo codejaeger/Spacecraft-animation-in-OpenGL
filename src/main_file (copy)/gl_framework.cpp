@@ -16,6 +16,11 @@ extern bool animation;
 extern int sig;
 extern int bez_idx;
 
+extern glm::mat4 projection_matrix;
+extern glm::mat4 lookat_matrix;
+extern glm::mat4 view_matrix;
+float xpt,ypt;
+
 extern csX75::HNode *node1, *node2, *node3,*node4, *node5, *node6, *node7, *node8, *node9, *node10, *node11,*node1e,*node2e,*node3e,*node4e,*node5e,*curr_node;
 
 const int num_vertices = 100000;
@@ -68,6 +73,25 @@ namespace csX75
     // glfwGetCursorPos(window, &xpos, &ypos);
     // std::cout << "Cursor Position at (" << xpos << " : " << ypos << '\n';
   }
+
+  void func(double xpt,double ypt){
+    glm::vec4 pt(xpt,ypt,0.0,1.0);
+    // pt = glm::inverse(lookat_matrix)*(glm::inverse(projection_matrix)*pt);
+    std::cout<<pt[0]<<" "<<pt[1]<<" "<<pt[2]<<" "<<pt[3]<<"\n";
+    pt = glm::inverse(projection_matrix*lookat_matrix)*pt;
+    bez_ctrl[bez_idx] = glm::vec3(pt[0],pt[1],pt[2]);
+    bez_idx++;
+    sig = 1;
+    // for(int i=0;i<bez_ctrl_idx;i++)
+    // {
+    //   glm::vec4 temp = glm::vec4(bez_ctrl[i],1.0);
+    //   std::cout<<temp[0]<<" "<<temp[1]<<" "<<temp[2]<<" "<<temp[3]<<'\n';
+    // }
+    // update_curve();
+    std::cout<<"Control point placed at ";
+    std::cout<<pt[0]<<" "<<pt[1]<<" "<<pt[2]<<" "<<pt[3]<<"\n";
+  }
+
   void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
   {
     if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) 
@@ -76,6 +100,13 @@ namespace csX75
        //getting cursor position
        glfwGetCursorPos(window, &xpos, &ypos);
        std::cout << "Cursor Position at (" << xpos << " : " << ypos << '\n';
+       int h,w;
+       GLFWwindow* window;
+       glfwGetWindowSize(window,&w,&h);
+       std::cout<<w<<" "<<h<<"\n";
+       xpt = 2*xpos/w-1;
+       ypt = 1-2*ypos/h;
+       func(xpt,ypt);
     }
   }
   // glfwSetMouseButtonCallback(window, mouse_callback);
@@ -126,7 +157,8 @@ namespace csX75
       //   std::cout<<temp[0]<<" "<<temp[1]<<" "<<temp[2]<<" "<<temp[3]<<'\n';
       // }
       // update_curve();
-      std::cout<<"Control point placed\n";
+      std::cout<<"Control point placed at ";
+      std::cout<<cur_cent[0]<<" "<<cur_cent[1]<<" "<<cur_cent[2]<<"\n";
     }
     // else if (key == GLFW_KEY_P && action == GLFW_PRESS)
     //   enable_perspective = !enable_perspective;   

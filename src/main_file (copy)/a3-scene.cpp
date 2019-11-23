@@ -33,7 +33,8 @@ int sig=0;
 
 glm::mat4 scale[4], rot[4], trans[4];
  
-glm::vec3 cur_cent=glm::vec3(1.0,1.0,1.0);
+glm::vec3 cur_cent=glm::vec3(5.0, 0.0, 0.0);
+// glm::vec3 cur_cent=glm::vec3(4.9475, 0.148, 0.4771);
 const int tess_curs = 10;
 const int curs_ver = 40;
 glm::vec4 v_positions_cursor[curs_ver];
@@ -148,7 +149,7 @@ void update_bez_curve(void){
   //   std::cout<<"\n";
   // }
   int k=0;
-  for(float t=0.0;t<=1.0;t+=0.01){
+  for(float t=0.0;t<=1.0;t+=0.001){
     for(int i=1;i<n;i++){
       for(int j=0;j<=n-i;j++){
         B[i][j] = B[i-1][j]*(1-t) + B[i-1][j+1]*t;
@@ -165,7 +166,7 @@ void update_bez_curve(void){
   //   }
   //   std::cout<<"\n";
   // }
-  node_line = new csX75::HNode(NULL, 100, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_bez_line), sizeof(v_tex_norms), sizeof(v_tex_line), true);
+  node_line = new csX75::HNode(NULL, k, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_bez_line), sizeof(v_tex_norms), sizeof(v_tex_line), true);
 }
 
 
@@ -305,11 +306,11 @@ void load_earth(std::string filename){
   node1e = new csX75::HNode(NULL,num_vertices,texsun,texsun,sv_positions,sv_normals,stex_coords,sizeof(sv_positions),sizeof(sv_normals),sizeof(stex_coords),false);
   node1e->change_parameters(0.0,0.0,0.0,0.0,0.0,0.0);
   node2e = new csX75::HNode(node1e,num_vertices,texd,texn,v_positions,v_normals,tex_coords,sizeof(v_positions),sizeof(v_normals),sizeof(tex_coords),false);
-  node2e->change_parameters(5.0,0.0,0.0,0.0,0.0,0.0);
+  node2e->change_parameters(0.0,0.0,0.0,0.0,0.0,0.0);
   node3e = new csX75::HNode(node1e,num_vertices,texmars,texmars,mrsv_positions,mrsv_normals,mrstex_coords,sizeof(mrsv_positions),sizeof(mrsv_normals),sizeof(mrstex_coords),false);
-  node3e->change_parameters(6.0,0.0,0.0,0.0,0.0,0.0);
-  node4e = new csX75::HNode(node1e,num_vertices,tex2,tex2,spv_positions,spv_normals,sptex_coords,sizeof(spv_positions),sizeof(spv_normals),sizeof(sptex_coords),false);
-  node5e = new csX75::HNode(node2e,num_vertices,texc,texc,cpv_positions,cpv_normals,cptex_coords,sizeof(cpv_positions),sizeof(cpv_normals),sizeof(cptex_coords),false);  
+  node3e->change_parameters(0.0,0.0,0.0,0.0,0.0,0.0);
+  // node4e = new csX75::HNode(node1e,num_vertices,tex2,tex2,spv_positions,spv_normals,sptex_coords,sizeof(spv_positions),sizeof(spv_normals),sizeof(sptex_coords),false);
+  // node5e = new csX75::HNode(node2e,num_vertices,texc,texc,cpv_positions,cpv_normals,cptex_coords,sizeof(cpv_positions),sizeof(cpv_normals),sizeof(cptex_coords),false);  
 
 
   // root_node = curr_node = node1;
@@ -632,7 +633,7 @@ void initBuffersGL(void)
   // std::string fragment_shader_file("./07_fshader_tex.glsl");
 
 
-  cursor(0.1,tess_curs/5,tess_curs/5);
+  cursor(0.001,tess_curs/5,tess_curs/5);
 
   std::string vertex_shader_file("a3_vshader.glsl");
   std::string fragment_shader_file("a3_fshader.glsl");
@@ -714,9 +715,10 @@ void renderGL(void)
     projection_matrix = glm::frustum(-0.0001, 0.0001, -0.0001, 0.0001, 0.0001, 20.0);
   //projection_matrix = glm::perspective(glm::radians(90.0),1.0,0.1,5.0);
   else
-    projection_matrix = glm::ortho(-3.0, 3.0, -3.0, 3.0, -5.0, 5.0);
+    projection_matrix = glm::ortho(-15.0, 15.0, -15.0, 15.0, -15.0, 15.0);
 
   view_matrix = projection_matrix * lookat_matrix;
+  // view_matrix = projection_matrix;
 
   // modelview_matrix = view_matrix * model_matrix;
   // glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
