@@ -7,7 +7,6 @@ extern GLfloat c1_xrot,c1_yrot,c1_zrot;
 extern GLfloat c2_xpos,c2_ypos,c2_zpos;
 extern GLfloat c2_xrot,c2_yrot,c2_zrot;
 extern int bez_ctrl_idx,bezier_idx;
-extern glm::vec4 bezier[10000];
 extern bool enable_perspective;
 extern int camera;
 extern bool animation;
@@ -17,9 +16,8 @@ extern int bez_idx;
 extern csX75::HNode *node1, *node2, *node3,*node4, *node5, *node6, *node7, *node8, *node9, *node10, *node11,*node1e,*node2e,*node3e,*node4e,*node5e,*curr_node;
 
 const int num_vertices = 100000;
-const int num_prms = 100;
 extern glm::vec3 cur_cent;
-extern glm::vec3 bez_ctrl[num_prms];
+extern glm::vec3 bez_ctrl[100];
 extern glm::vec4 v_positions_box[num_vertices], v_colors_box[num_vertices], v_normals_box[num_vertices];
 extern glm::vec2 tex_coords_box[num_vertices];
 extern glm::vec4 v_positions_prop[num_vertices], v_colors_prop[num_vertices], v_normals_prop[num_vertices];
@@ -214,10 +212,10 @@ namespace csX75
     //   curr_node->dec_rz();
     // else if (key == GLFW_KEY_PAGE_DOWN)
     //   curr_node->inc_rz();
-    else if (key == GLFW_KEY_Y){
-      node5->ty += 0.2;
-      node5->update_matrices();
-    }
+    // else if (key == GLFW_KEY_Y){
+    //   node5->ty += 0.2;
+    //   node5->update_matrices();
+    // }
     else if (key == GLFW_KEY_LEFT_BRACKET){
       if(camera == 1) c1_zpos -= 0.0025;
       else c2_xpos += 0.1;
@@ -242,10 +240,40 @@ namespace csX75
       if(camera == 1) c1_xpos -= 0.0025;
       else c2_zpos += 0.05;
     }
-    else if (key == GLFW_KEY_T && action == GLFW_PRESS) // to toggle camera
+    else if (key == GLFW_KEY_KP_0 && action == GLFW_PRESS) // to toggle camera
       camera = 3 - camera;
     else if((key == GLFW_KEY_L && action == GLFW_PRESS) || (key == GLFW_KEY_I && action == GLFW_PRESS)){
       animation = true;
+    }
+    else if(key == GLFW_KEY_T && action == GLFW_PRESS){
+      std::ofstream outfile;
+      outfile.open("data/trajectory.txt");
+
+      outfile<<bez_idx<<"\n";
+      for(int i=0;i<bez_idx;i++){
+        for(int j=0;j<3;j++){
+          outfile<<bez_ctrl[i][j]<<" ";
+        }
+        outfile<<"\n";
+      }
+
+      outfile.close();
+      std::cout<<"Trajectories saved successfully\n";
+    }
+    else if(key == GLFW_KEY_Y && action == GLFW_PRESS){
+      std::ifstream infile;
+      infile.open("data/trajectory.txt");
+
+      infile>>bez_idx;
+      for(int i=0;i<bez_idx;i++){
+        for(int j=0;j<3;j++){
+          infile>>bez_ctrl[i][j];
+        }
+      }
+      sig = 1;
+
+      infile.close();
+      std::cout<<"Trajectories loaded successfully\n";
     }
   }
 };  

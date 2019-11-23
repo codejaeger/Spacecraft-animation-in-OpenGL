@@ -48,8 +48,6 @@ int line_idx=0;
 
 const int max_num_ctrl_pnts=100;
 glm::vec3 bez_ctrl[max_num_ctrl_pnts];
-glm::vec3 bezier[10000];
-int bez_ctrl_idx =0;
 int bez_idx = 0;
 
 int count = 0;
@@ -170,10 +168,7 @@ void update_bez_curve(void){
 }
 
 
-
-
 int cur_idx = 0;
-
 void cursor(double radius, int Lats, int Longs)
 {
   float lats, longs;
@@ -222,59 +217,21 @@ void cursor(double radius, int Lats, int Longs)
 }
 
 
-// void load_bezier_contl()
-// {
-//   GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
-//   for(int i=bez_cnt_nodes;i<bez_ctrl_idx;i++)
-//   {
-//     bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), true);
-//     bez_cnt[i]->change_parameters(bez_ctrl[i][0],bez_ctrl[i][1],bez_ctrl[i][2],0,0,0);
-//   }
-//   bez_cnt_nodes=bez_ctrl_idx;
-// }
 
-
-// void load_bezier_contl()
-// {
-//   GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
-//   for(int i=0;i<line_idx;i++)
-//   {
-//     bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), false);
-//     bez_cnt[i]->change_parameters(v_positions_bez_line[i][0],v_positions_bez_line[i][1],v_positions_bez_line[i][2],0,0,0);
-//   }
-//   bez_cnt_nodes=line_idx;
-// }
-
-
-// void load_bezier_contl()
-// {
-//   GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
-//   for(int i=0;i<bez_idx;i++)
-//   {
-//     bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), false);
-//     bez_cnt[i]->change_parameters(bezier[i][0],bezier[i][1],bezier[i][2],0,0,0);
-//   }
-//   bez_cnt_nodes=bez_idx;
-// }
-
-
-// void load_bezier_lines()
-// {
-//   // GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
-//   line_idx=0;
-//   for(int i=0;i<bez_idx-1;i++)
-//   {
-//     v_tex_line[line_idx]=glm::vec3(0,0,5);
-//     v_tex_norms[line_idx]=glm::vec4(0.0);
-//     v_positions_bez_line[line_idx]=glm::vec4(bezier[i],1.0);line_idx++;
-//     v_tex_line[line_idx]=glm::vec3(0,0,5);
-//     v_tex_norms[line_idx]=glm::vec4(0.0);
-//     v_positions_bez_line[line_idx]=glm::vec4(bezier[i+1],1.0);line_idx++;
-//   }
-//   node_line = new csX75::HNode(NULL, 2*line_idx-1, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_bez_line), sizeof(v_tex_norms), sizeof(v_tex_line), true);
-// }
-
-
+void update_ctrl_pnts()
+{
+  glm::vec3 pn = bez_ctrl[bez_idx-1];
+  glm::vec3 p0 = bez_ctrl[0];
+  GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
+  if(bez_idx==1){
+    bez_node = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), false);
+    bez_node->change_parameters(p0[0],p0[1],p0[2],0,0,0);
+  }
+  else{
+    new_node = new csX75::HNode(bez_node, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), false);
+    new_node->change_parameters(pn[0]-p0[0],pn[1]-p0[0],pn[2]-p0[0],0,0,0);
+  }
+}
 
 void load_earth(std::string filename){
   std::ifstream infile;
@@ -667,7 +624,7 @@ void initBuffersGL(void)
   // std::string fragment_shader_file("./07_fshader_tex.glsl");
 
 
-  cursor(0.01,tess_curs/5,tess_curs/5);
+  cursor(0.1,tess_curs/5,tess_curs/5);
 
   std::string vertex_shader_file("a3_vshader.glsl");
   std::string fragment_shader_file("a3_fshader.glsl");
@@ -764,32 +721,24 @@ void renderGL(void)
   node4->render_tree();
   matrixStack.pop_back();
 
-  // bez_cnt_nodes=bez_ctrl_idx;
-  // bez_nodes = bez_idx;
   if(sig==1)
   {
     // std::cout<<"ok\n";
     update_bez_curve();
+    update_ctrl_pnts();
     std::cout<<"Bezier curve updated\n";
     sig=0;
   }
-  // for(int i=0;i<bez_ctrl_idx;i++)
-  // {
-  //   matrixStack.push_back(view_matrix);
-  //   bez_cnt[i]->render_tree();
-  //   matrixStack.pop_back();
-  // }
-  // for(int i=0;i<bez_idx;i++)
-  // {
-  //   matrixStack.push_back(view_matrix);
-  //   bez_cnt[i]->render_tree();
-  //   matrixStack.pop_back();
-  // }
+
   // std::cout<<bez_idx<<"\n";
   if(bez_idx>0)
   {
     matrixStack.push_back(view_matrix);
     node_line->render_tree();
+    matrixStack.pop_back();
+
+    matrixStack.push_back(view_matrix);
+    bez_node->render_tree();
     matrixStack.pop_back();
   }
 
