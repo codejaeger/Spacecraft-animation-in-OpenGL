@@ -202,6 +202,17 @@ void cursor(double radius, int Lats, int Longs)
 // }
 
 
+// void load_bezier_contl()
+// {
+//   GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
+//   for(int i=0;i<line_idx;i++)
+//   {
+//     bez_cnt[i] = new csX75::HNode(NULL, curs_ver, texsun, texsun, v_positions_cursor, v_normals_cursor, v_tex_cursor, sizeof(v_positions_cursor), sizeof(v_normals_cursor), sizeof(v_tex_cursor), false);
+//     bez_cnt[i]->change_parameters(v_positions_bez_line[i][0],v_positions_bez_line[i][1],v_positions_bez_line[i][2],0,0,0);
+//   }
+//   bez_cnt_nodes=line_idx;
+// }
+
 
 void load_bezier_contl()
 {
@@ -217,7 +228,8 @@ void load_bezier_contl()
 
 void load_bezier_lines()
 {
-  int line_idx=0;
+  // GLuint texsun = LoadTexture("images/2k_sun.bmp", 2048, 1024);
+  line_idx=0;
   for(int i=0;i<bezier_idx-1;i++)
   {
     v_tex_line[line_idx]=glm::vec3(0,0,5);
@@ -227,7 +239,7 @@ void load_bezier_lines()
     v_tex_norms[line_idx]=glm::vec4(0.0);
     v_positions_bez_line[line_idx]=glm::vec4(bezier[i+1],1.0);line_idx++;
   }
-  node_line = new csX75::HNode(NULL, 1000, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_bez_line), sizeof(v_tex_norms), sizeof(v_tex_line), false);
+  node_line = new csX75::HNode(NULL, 2*line_idx-1, 0, 0, v_positions_bez_line, v_tex_norms, v_tex_line, sizeof(v_positions_bez_line), sizeof(v_tex_norms), sizeof(v_tex_line), true);
 }
 
 
@@ -317,8 +329,8 @@ void load_payload(std::string filename){
     for(int j=0;j<4;j++) infile>>v_positions_box[i][j];
     for(int j=0;j<4;j++) infile>>v_colors_box[i][j];
     for(int j=0;j<4;j++) infile>>v_normals_box[i][j];
-    for(int j=0;j<2;j++) infile>>tex_coords_box[i][j];
-      tex_coords_box[i][2]=0;
+    // for(int j=0;j<2;j++) infile>>tex_coords_box[i][j];
+    //   tex_coords_box[i][2]=0;
   }
 
   infile>>prop_idx;
@@ -423,6 +435,7 @@ void load_launchpad(std::string filename){
     for(int j=0;j<4;j++) infile>>v_colors_box[i][j];
     for(int j=0;j<4;j++) infile>>v_normals_box[i][j];
     // for(int j=0;j<2;j++) infile>>tex_coords_box[i][j];
+    //   tex_coords_box[i][2]=3;
   }
 
   infile>>plat_idx;
@@ -438,8 +451,8 @@ void load_launchpad(std::string filename){
     for(int j=0;j<4;j++) infile>>v_positions_w1[i][j];
     for(int j=0;j<4;j++) infile>>v_colors_w1[i][j];
     for(int j=0;j<4;j++) infile>>v_normals_w1[i][j];
-    for(int j=0;j<2;j++) infile>>tex_coords_w1[i][j];
-      tex_coords_w1[i][2] = 0;
+    for(int j=0;j<3;j++) infile>>tex_coords_w1[i][j];
+      // tex_coords_w1[i][2] = 0;
   }
 
   infile>>w2_idx;
@@ -740,14 +753,18 @@ void renderGL(void)
     bez_cnt[i]->render_tree();
     matrixStack.pop_back();
   }
-  // matrixStack.push_back(view_matrix);
-  // node_line->render_tree();
-  // matrixStack.pop_back();
+  std::cout<<line_idx<<" ";
+  if(line_idx>0)
+  {
+  matrixStack.push_back(view_matrix);
+  node_line->render_tree();
+  matrixStack.pop_back();
+  }
   if(animation){
     if(count<5000){
-      node2->tx -= 0.001;
+      node2->tx -= 0.01;
       // node2->ty -= 0.01;
-      node5->tx -= 0.001;
+      node5->tx -= 0.01;
       // node5->ty -= 0.01;
       node2e->change_rot(-0.5);
       node3e->change_rot(-0.3);

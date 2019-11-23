@@ -136,11 +136,11 @@ namespace csX75
 		glUniform1i( uniformTex0, 0 ); // Bind the first sampler to texture unit 0.
 		glUniform1i( uniformTex1, 1 );
   		glBindVertexArray(vao);
-  		glDrawArrays(GL_TRIANGLE_STRIP, 0, num_vertices);
+  		// glDrawArrays(GL_TRIANGLE_STRIP, 0, num_vertices);
 
-		glBindVertexArray (vao);
+		// glBindVertexArray (vao);
 		if(!wireframe) glDrawArrays(GL_TRIANGLE_STRIP, 0, num_vertices);
-		else glDrawArrays(GL_LINE, 0, num_vertices);
+		else glDrawArrays(GL_LINE_STRIP, 0, num_vertices);
 
 		// for memory 
 		delete ms_mult;
