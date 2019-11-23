@@ -15,6 +15,7 @@ glm::mat4 projection_matrix;
 glm::mat4 ortho_matrix;
 glm::mat4 c1_rotation_matrix;
 glm::mat4 c2_rotation_matrix;
+glm::mat4 c3_rotation_matrix;
 glm::mat4 lookat_matrix;
 
 glm::mat4 model_matrix;
@@ -304,9 +305,9 @@ void load_earth(std::string filename){
   node1e = new csX75::HNode(NULL,num_vertices,texsun,texsun,sv_positions,sv_normals,stex_coords,sizeof(sv_positions),sizeof(sv_normals),sizeof(stex_coords),false);
   node1e->change_parameters(0.0,0.0,0.0,0.0,0.0,0.0);
   node2e = new csX75::HNode(node1e,num_vertices,texd,texn,v_positions,v_normals,tex_coords,sizeof(v_positions),sizeof(v_normals),sizeof(tex_coords),false);
-  node2e->change_parameters(0,-3.0,0.0,0.0,0.0,0.0);
+  node2e->change_parameters(5.0,0.0,0.0,0.0,0.0,0.0);
   node3e = new csX75::HNode(node1e,num_vertices,texmars,texmars,mrsv_positions,mrsv_normals,mrstex_coords,sizeof(mrsv_positions),sizeof(mrsv_normals),sizeof(mrstex_coords),false);
-  node3e->change_parameters(0,-5.5,0,0.0,0.0,0.0);
+  node3e->change_parameters(6.0,0.0,0.0,0.0,0.0,0.0);
   node4e = new csX75::HNode(node1e,num_vertices,tex2,tex2,spv_positions,spv_normals,sptex_coords,sizeof(spv_positions),sizeof(spv_normals),sizeof(sptex_coords),false);
   node5e = new csX75::HNode(node2e,num_vertices,texc,texc,cpv_positions,cpv_normals,cptex_coords,sizeof(cpv_positions),sizeof(cpv_normals),sizeof(cptex_coords),false);  
 
@@ -683,9 +684,9 @@ void renderGL(void)
     glm::vec4 c1_pos = glm::vec4(c1_xpos, c1_ypos, c1_zpos, 1.0) * c1_rotation_matrix;
     glm::vec4 c1_up = glm::vec4(c1_up_x, c1_up_y, c1_up_z, 1.0) * c1_rotation_matrix;
     //Creating the lookat matrix
-    lookat_matrix = glm::lookAt(glm::vec3(c1_pos), cur_cent, glm::vec3(c1_up));
+    lookat_matrix = glm::lookAt(glm::vec3(c1_pos), rocket_pos, glm::vec3(c1_up));
   }
-  else{
+  else if(camera==2){
     c2_rotation_matrix = glm::rotate(glm::mat4(1.0f), glm::radians(c2_xrot), glm::vec3(1.0f, 0.0f, 0.0f));
     c2_rotation_matrix = glm::rotate(c2_rotation_matrix, glm::radians(c2_yrot), glm::vec3(0.0f, 1.0f, 0.0f));
     c2_rotation_matrix = glm::rotate(c2_rotation_matrix, glm::radians(c2_zrot), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -694,13 +695,23 @@ void renderGL(void)
     glm::vec4 c2_up = glm::vec4(c2_up_x, c2_up_y, c2_up_z, 1.0) * c2_rotation_matrix;
     //Creating the lookat matrix
     // lookat_matrix = glm::lookAt(glm::vec3(c2_pos), glm::vec3(-0.09,0.22,1.0), glm::vec3(c2_up));
-    lookat_matrix = glm::lookAt(glm::vec3(c2_pos), glm::vec3(0.0), glm::vec3(c2_up));
-    
+    lookat_matrix = glm::lookAt(glm::vec3(c2_pos), rocket_pos, glm::vec3(c2_up));
+  }
+  else if(camera==3){
+    c3_rotation_matrix = glm::rotate(glm::mat4(1.0f), glm::radians(c3_xrot), glm::vec3(1.0f, 0.0f, 0.0f));
+    c3_rotation_matrix = glm::rotate(c3_rotation_matrix, glm::radians(c3_yrot), glm::vec3(0.0f, 1.0f, 0.0f));
+    c3_rotation_matrix = glm::rotate(c3_rotation_matrix, glm::radians(c3_zrot), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    glm::vec4 c3_pos = glm::vec4(c3_xpos, c3_ypos, c3_zpos, 1.0) * c3_rotation_matrix;
+    glm::vec4 c3_up = glm::vec4(c3_up_x, c3_up_y, c3_up_z, 1.0) * c3_rotation_matrix;
+    //Creating the lookat matrix
+    // lookat_matrix = glm::lookAt(glm::vec3(c3_pos), glm::vec3(-0.09,0.22,1.0), glm::vec3(c3_up));
+    lookat_matrix = glm::lookAt(glm::vec3(c3_pos), glm::vec3(0.0), glm::vec3(c3_up));
   }
 
   //creating the projection matrix
   if (enable_perspective)
-    projection_matrix = glm::frustum(-0.01, 0.01, -0.01, 0.01, 0.01, 15.0);
+    projection_matrix = glm::frustum(-0.0001, 0.0001, -0.0001, 0.0001, 0.0001, 20.0);
   //projection_matrix = glm::perspective(glm::radians(90.0),1.0,0.1,5.0);
   else
     projection_matrix = glm::ortho(-3.0, 3.0, -3.0, 3.0, -5.0, 5.0);
@@ -763,13 +774,13 @@ void renderGL(void)
   }
 
   if(animation){
-    if(count<5000){
-      node2->tx -= 0.01;
+    if(count<500){
+      node2->tx -= 0.015;
       // node2->ty -= 0.01;
-      node5->tx -= 0.01;
+      node5->tx -= 0.015;
       // node5->ty -= 0.01;
-      node2e->change_rot(-0.5);
-      node3e->change_rot(-0.3);
+      // node2e->change_rot(-0.5);
+      // node3e->change_rot(-0.3);
       node2->update_matrices();
       node5->update_matrices();
       count++;

@@ -34,13 +34,18 @@ GLfloat xrot=0.0,yrot=0.0,zrot=0.0;*/
 GLfloat xrot=0.0,yrot=0.0,zrot=0.0;
 
 // Camera position and rotation Parameters
-GLfloat c1_xpos = -1, c1_ypos = 1.15, c1_zpos = 0.5;
-GLfloat c1_up_x = 0.0, c1_up_y = 0.7, c1_up_z = 0.0;
+// 4.95 0.15 0.48
+GLfloat c1_xpos = 4.9350, c1_ypos = 0.1425, c1_zpos = 0.4800;
+GLfloat c1_up_x = 0.0, c1_up_y = 0.0, c1_up_z = 1.0;
 GLfloat c1_xrot=0.0,c1_yrot=0.0,c1_zrot=0.0;
 
-GLfloat c2_xpos = -1, c2_ypos = 1.3, c2_zpos = 0.5;
-GLfloat c2_up_x = 0.0, c2_up_y = 0.7, c2_up_z = 0.0;
+GLfloat c2_xpos = 5.0, c2_ypos = 1.05, c2_zpos = 1.01;
+GLfloat c2_up_x = 0.0, c2_up_y = 1.0, c2_up_z = 0.0;
 GLfloat c2_xrot=0.0,c2_yrot=0.0,c2_zrot=0.0;
+
+GLfloat c3_xpos = 0.0, c3_ypos = 0.0, c3_zpos = 7.0;
+GLfloat c3_up_x = 0.0, c3_up_y = 1.0, c3_up_z = 0.0;
+GLfloat c3_xrot=0.0,c3_yrot=0.0,c3_zrot=0.0;
 
 int camera = 1;
 bool animation = false;

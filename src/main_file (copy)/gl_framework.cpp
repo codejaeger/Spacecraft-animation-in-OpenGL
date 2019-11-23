@@ -6,6 +6,9 @@ extern GLfloat c1_xpos,c1_ypos,c1_zpos;
 extern GLfloat c1_xrot,c1_yrot,c1_zrot;
 extern GLfloat c2_xpos,c2_ypos,c2_zpos;
 extern GLfloat c2_xrot,c2_yrot,c2_zrot;
+extern GLfloat c3_xpos,c3_ypos,c3_zpos;
+extern GLfloat c3_xrot,c3_yrot,c3_zrot;
+
 extern int bez_ctrl_idx,bezier_idx;
 extern bool enable_perspective;
 extern int camera;
@@ -132,35 +135,36 @@ namespace csX75
     else if (key == GLFW_KEY_PAGE_DOWN)
       // curr_node->inc_rz();
       curr_node->change_rot(-1);
-    else if (key == GLFW_KEY_A )
+    else if (key == GLFW_KEY_A ){
       if(camera==1)c1_yrot -= 1.0;
-    else
-      c2_yrot -= 1.0;
-    else if (key == GLFW_KEY_D )
+      else if(camera==2) c2_yrot -= 1.0;
+      else c3_yrot -= 1.0;
+    }
+    else if (key == GLFW_KEY_D ){
       if(camera==1)c1_yrot += 1.0;
-    else
-      c2_yrot += 1.0;
-      // c1_yrot += 1.0;
-    else if (key == GLFW_KEY_W )
-      // c1_xrot -= 1.0;
+      else if(camera==2) c2_yrot += 1.0;
+      else c3_yrot += 1.0;
+    }
+    else if (key == GLFW_KEY_W ){
       if(camera==1)c1_xrot -= 1.0;
-    else
-      c2_xrot -= 1.0;
-    else if (key == GLFW_KEY_S )
-      // c1_xrot += 1.0;
+      else if(camera==2) c2_xrot -= 1.0;
+      else c3_xrot -= 1.0;
+    }
+    else if (key == GLFW_KEY_S ){
       if(camera==1)c1_xrot += 1.0;
-    else
-      c2_xrot += 1.0;        
-    else if (key == GLFW_KEY_Q )
-      // c1_zrot -= 1.0;
+      else if(camera==2) c2_xrot += 1.0;
+      else c3_xrot += 1.0;
+    }
+    else if (key == GLFW_KEY_Q ){
       if(camera==1)c1_zrot -= 1.0;
-    else
-      c2_zrot -= 1.0;
-    else if (key == GLFW_KEY_E )
-      // c1_zrot += 1.0;
+      else if(camera==2) c2_zrot -= 1.0;
+      else c3_zrot -= 1.0;
+    }
+    else if (key == GLFW_KEY_E ){
       if(camera==1)c1_zrot += 1.0;
-    else
-      c2_zrot += 1.0;
+      else if(camera==2) c2_zrot += 1.0;
+      else c3_zrot += 1.0;
+    }
     else if (key == GLFW_KEY_X){
       node2->tx -= 0.01;
       node2->ty -= 0.01;
@@ -218,30 +222,38 @@ namespace csX75
     // }
     else if (key == GLFW_KEY_LEFT_BRACKET){
       if(camera == 1) c1_zpos -= 0.0025;
-      else c2_xpos += 0.1;
+      else if(camera == 2) c2_xpos -= 0.1;
+      else c3_xpos -= 0.1;
     }
     else if (key == GLFW_KEY_RIGHT_BRACKET){
       if(camera == 1) c1_zpos += 0.0025;
-      c2_xpos -=0.1;
+      else if(camera == 2) c2_xpos +=0.1;
+      else c3_xpos += 0.1;
     }
     else if (key == GLFW_KEY_RIGHT){
       if(camera == 1) c1_ypos += 0.0025;
-      else c2_ypos += 0.05;
+      else if(camera == 2) c2_ypos += 0.05;
+      else c3_ypos += 0.1;
     }
     else if (key == GLFW_KEY_LEFT){
       if(camera == 1) c1_ypos -= 0.0025;
-      else c2_ypos -= 0.05;
+      else if(camera == 2) c2_ypos -= 0.05;
+      else c3_ypos -= 0.1;
     }
     else if (key == GLFW_KEY_UP){
       if(camera == 1) c1_xpos += 0.0025;
-      else c2_zpos -= 0.05;
+      else if(camera == 2) c2_zpos += 0.05;
+      else c3_zpos += 0.1;
     }
     else if (key == GLFW_KEY_DOWN){
       if(camera == 1) c1_xpos -= 0.0025;
-      else c2_zpos += 0.05;
+      else if(camera == 2) c2_zpos -= 0.05;
+      else c3_zpos -= 0.1;
     }
-    else if (key == GLFW_KEY_KP_0 && action == GLFW_PRESS) // to toggle camera
-      camera = 3 - camera;
+    else if (key == GLFW_KEY_KP_0 && action == GLFW_PRESS){ // to toggle camera
+      camera = camera + 1;
+      if(camera==4) camera = 1;
+    }
     else if((key == GLFW_KEY_L && action == GLFW_PRESS) || (key == GLFW_KEY_I && action == GLFW_PRESS)){
       animation = true;
     }

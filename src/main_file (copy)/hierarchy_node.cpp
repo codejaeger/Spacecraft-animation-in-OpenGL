@@ -72,7 +72,7 @@ namespace csX75
 	void HNode::update_matrices(){
 
 
-		rev = glm::rotate(glm::mat4(1.0f), glm::radians(revcl), glm::vec3(1.0f,0.0f,0.0f));
+		// rev = glm::rotate(glm::mat4(1.0f), glm::radians(revcl), glm::vec3(1.0f,0.0f,0.0f));
 		rotation = glm::rotate(glm::mat4(1.0f), glm::radians(rx), glm::vec3(1.0f,0.0f,0.0f));
 		rotation = glm::rotate(rotation, glm::radians(ry), glm::vec3(0.0f,1.0f,0.0f));
 		rotation = glm::rotate(rotation, glm::radians(rz), glm::vec3(0.0f,0.0f,1.0f));
@@ -149,8 +149,9 @@ namespace csX75
 
 	void HNode::render_tree(){
 		
-		matrixStack.push_back(rev);
+		// matrixStack.push_back(rev);
 		matrixStack.push_back(translation);
+		// matrixStack.push_back(rev);
 		matrixStack.push_back(rotation);
 
 		render();
@@ -159,7 +160,7 @@ namespace csX75
 		}
 		matrixStack.pop_back();
 		matrixStack.pop_back();
-		matrixStack.pop_back();
+		// matrixStack.pop_back();
 
 	}
 
