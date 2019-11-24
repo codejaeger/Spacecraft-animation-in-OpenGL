@@ -14,7 +14,8 @@ extern bool enable_perspective;
 extern int camera;
 extern bool animation;
 extern int sig;
-extern int bez_idx;
+extern int bez_idx[4];
+extern int t_idx;
 
 extern glm::mat4 projection_matrix;
 extern glm::mat4 lookat_matrix;
@@ -25,7 +26,7 @@ extern csX75::HNode *node1, *node2, *node3,*node4, *node5, *node6, *node7, *node
 
 const int num_vertices = 100000;
 extern glm::vec3 cur_cent;
-extern glm::vec3 bez_ctrl[100];
+extern glm::vec3 bez_ctrl[4][100];
 extern glm::vec4 v_positions_box[num_vertices], v_colors_box[num_vertices], v_normals_box[num_vertices];
 extern glm::vec2 tex_coords_box[num_vertices];
 extern glm::vec4 v_positions_prop[num_vertices], v_colors_prop[num_vertices], v_normals_prop[num_vertices];
@@ -79,8 +80,8 @@ namespace csX75
     // pt = glm::inverse(lookat_matrix)*(glm::inverse(projection_matrix)*pt);
     std::cout<<pt[0]<<" "<<pt[1]<<" "<<pt[2]<<" "<<pt[3]<<"\n";
     pt = glm::inverse(projection_matrix*lookat_matrix)*pt;
-    bez_ctrl[bez_idx] = glm::vec3(pt[0],pt[1],pt[2]);
-    bez_idx++;
+    bez_ctrl[t_idx][bez_idx[t_idx]] = glm::vec3(pt[0],pt[1],pt[2]);
+    bez_idx[t_idx]++;
     sig = 1;
     std::cout<<"Control point placed at ";
     std::cout<<pt[0]<<" "<<pt[1]<<" "<<pt[2]<<" "<<pt[3]<<"\n";
@@ -101,6 +102,11 @@ namespace csX75
        xpt = 2*xpos/w-1;
        ypt = 1-2*ypos/h;
        func(xpt,ypt);
+    }
+    if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) 
+    {
+      bez_idx[t_idx]-=1;
+      sig = 4;
     }
   }
   // glfwSetMouseButtonCallback(window, mouse_callback);
@@ -287,12 +293,14 @@ namespace csX75
       std::ofstream outfile;
       outfile.open("data/trajectory.txt");
 
-      outfile<<bez_idx<<"\n";
-      for(int i=0;i<bez_idx;i++){
-        for(int j=0;j<3;j++){
-          outfile<<bez_ctrl[i][j]<<" ";
+      for(int k=0;k<4;k++){
+        outfile<<bez_idx[k]<<"\n";
+        for(int i=0;i<bez_idx[k];i++){
+          for(int j=0;j<3;j++){
+            outfile<<bez_ctrl[k][i][j]<<" ";
+          }
+          outfile<<"\n";
         }
-        outfile<<"\n";
       }
 
       outfile.close();
@@ -302,16 +310,29 @@ namespace csX75
       std::ifstream infile;
       infile.open("data/trajectory.txt");
 
-      infile>>bez_idx;
-      for(int i=0;i<bez_idx;i++){
-        for(int j=0;j<3;j++){
-          infile>>bez_ctrl[i][j];
+      for(int k=0;k<4;k++){
+        infile>>bez_idx[k];
+        for(int i=0;i<bez_idx[k];i++){
+          for(int j=0;j<3;j++){
+            infile>>bez_ctrl[k][i][j];
+          }
         }
       }
+      // infile>>bez_idx;
+      // for(int i=0;i<bez_idx;i++){
+      //   for(int j=0;j<3;j++){
+      //     infile>>bez_ctrl[t_idx][i][j];
+      //   }
+      // }
       sig = 3;
 
       infile.close();
       std::cout<<"Trajectories loaded successfully\n";
+    }
+    else if(key == GLFW_KEY_J && action == GLFW_PRESS){
+      t_idx += 1;
+      if(t_idx==4) t_idx=0;
+      std::cout<<"t_idx "<<t_idx<<"\n";
     }
   }
 };  

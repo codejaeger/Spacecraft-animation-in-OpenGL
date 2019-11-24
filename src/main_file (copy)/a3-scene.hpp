@@ -65,9 +65,9 @@ std::vector<glm::mat4> matrixStack;
 csX75::HNode* root_node;
 csX75::HNode* curr_node;
 csX75::HNode *node1, *node2, *node3, *node4, *node5, *node6, *node7, *node8, *node9, *node10, *node11, *node12,*node1e,*node2e,*node3e,*node4e,*node5e;
-csX75::HNode *bez_cnt[100],*bezir[10000];
-csX75::HNode *node_line, *bez_node, *new_node;
-int bez_cnt_nodes=0,bez_nodes=0;
+// csX75::HNode *bez_cnt[100],*bezir[10000];
+csX75::HNode *node_line[4], *bez_node[4], *new_node;
+// int bez_cnt_nodes=0,bez_nodes=0;
 //-------------------------------------------------------------------------
 
 #endif
