@@ -306,11 +306,11 @@ void load_earth(std::string filename){
   node1e = new csX75::HNode(NULL,num_vertices,texsun,texsun,sv_positions,sv_normals,stex_coords,sizeof(sv_positions),sizeof(sv_normals),sizeof(stex_coords),false);
   node1e->change_parameters(0.0,0.0,0.0,0.0,0.0,0.0);
   node2e = new csX75::HNode(node1e,num_vertices,texd,texn,v_positions,v_normals,tex_coords,sizeof(v_positions),sizeof(v_normals),sizeof(tex_coords),false);
-  node2e->change_parameters(0.0,0.0,0.0,0.0,0.0,0.0);
+  node2e->change_parameters(5.0,0.0,0.0,0.0,0.0,0.0);
   node3e = new csX75::HNode(node1e,num_vertices,texmars,texmars,mrsv_positions,mrsv_normals,mrstex_coords,sizeof(mrsv_positions),sizeof(mrsv_normals),sizeof(mrstex_coords),false);
-  node3e->change_parameters(0.0,0.0,0.0,0.0,0.0,0.0);
+  node3e->change_parameters(6.0,0.0,0.0,0.0,0.0,0.0);
   // node4e = new csX75::HNode(node1e,num_vertices,tex2,tex2,spv_positions,spv_normals,sptex_coords,sizeof(spv_positions),sizeof(spv_normals),sizeof(sptex_coords),false);
-  // node5e = new csX75::HNode(node2e,num_vertices,texc,texc,cpv_positions,cpv_normals,cptex_coords,sizeof(cpv_positions),sizeof(cpv_normals),sizeof(cptex_coords),false);  
+  node5e = new csX75::HNode(node2e,num_vertices,texc,texc,cpv_positions,cpv_normals,cptex_coords,sizeof(cpv_positions),sizeof(cpv_normals),sizeof(cptex_coords),false);  
 
 
   // root_node = curr_node = node1;

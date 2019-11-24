@@ -82,12 +82,6 @@ namespace csX75
     bez_ctrl[bez_idx] = glm::vec3(pt[0],pt[1],pt[2]);
     bez_idx++;
     sig = 1;
-    // for(int i=0;i<bez_ctrl_idx;i++)
-    // {
-    //   glm::vec4 temp = glm::vec4(bez_ctrl[i],1.0);
-    //   std::cout<<temp[0]<<" "<<temp[1]<<" "<<temp[2]<<" "<<temp[3]<<'\n';
-    // }
-    // update_curve();
     std::cout<<"Control point placed at ";
     std::cout<<pt[0]<<" "<<pt[1]<<" "<<pt[2]<<" "<<pt[3]<<"\n";
   }
@@ -146,22 +140,22 @@ namespace csX75
       curr_node = node4e;
     else if (key == GLFW_KEY_KP_9 && action == GLFW_PRESS)
       curr_node = node5e;
-     else if(key == GLFW_KEY_P && action == GLFW_PRESS){
-      //  std::cout<<"hello";
-      bez_ctrl[bez_idx] = cur_cent;
-      bez_idx++;
-      sig = 1;
-      // for(int i=0;i<bez_ctrl_idx;i++)
-      // {
-      //   glm::vec4 temp = glm::vec4(bez_ctrl[i],1.0);
-      //   std::cout<<temp[0]<<" "<<temp[1]<<" "<<temp[2]<<" "<<temp[3]<<'\n';
-      // }
-      // update_curve();
-      std::cout<<"Control point placed at ";
-      std::cout<<cur_cent[0]<<" "<<cur_cent[1]<<" "<<cur_cent[2]<<"\n";
-    }
-    // else if (key == GLFW_KEY_P && action == GLFW_PRESS)
-    //   enable_perspective = !enable_perspective;   
+    //  else if(key == GLFW_KEY_P && action == GLFW_PRESS){
+    //   //  std::cout<<"hello";
+    //   bez_ctrl[bez_idx] = cur_cent;
+    //   bez_idx++;
+    //   sig = 1;
+    //   // for(int i=0;i<bez_ctrl_idx;i++)
+    //   // {
+    //   //   glm::vec4 temp = glm::vec4(bez_ctrl[i],1.0);
+    //   //   std::cout<<temp[0]<<" "<<temp[1]<<" "<<temp[2]<<" "<<temp[3]<<'\n';
+    //   // }
+    //   // update_curve();
+    //   std::cout<<"Control point placed at ";
+    //   std::cout<<cur_cent[0]<<" "<<cur_cent[1]<<" "<<cur_cent[2]<<"\n";
+    // }
+    else if (key == GLFW_KEY_P && action == GLFW_PRESS)
+      enable_perspective = !enable_perspective;   
     else if (key == GLFW_KEY_PAGE_UP)
       curr_node->change_rot(1);
     else if (key == GLFW_KEY_PAGE_DOWN)
