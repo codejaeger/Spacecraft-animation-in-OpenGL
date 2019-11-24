@@ -61,12 +61,19 @@ void main ()
     else
       frag_color = (color*(ambient1+diff));
   }
-  if(bt==3)
-  {
-  frag_color = vec4(1.0, 0, 0, 1.0);
+  if(bt==3){
+    frag_color = vec4(1.0, 0, 0, 1.0);
   }
-  if(bt==5)
-  {
-  frag_color = vec4(1.0,0,0,1.0);
+  if(bt==5){
+    frag_color = vec4(1.0,0,0,1.0);
+  }
+  if(bt==6){
+    frag_color = vec4(1,1,0,1.0);
+  }
+  if(bt==7){
+    frag_color = vec4(1,0,0,1.0);
+  }
+  if(bt==8){
+    frag_color = vec4(0,1,1,1.0);
   }
 }

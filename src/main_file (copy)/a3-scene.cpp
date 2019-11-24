@@ -30,6 +30,9 @@ GLuint texCoord;
 GLuint modelMatrix;
 int sig=0;
 
+int t_flag[4]={0};
+double t_par[4]={0};
+
 
 glm::mat4 scale[4], rot[4], trans[4];
  
@@ -142,14 +145,14 @@ void update_bez_curve(int t_idx){
   }
   std::cout<<n<<"\n";
   int k=0;
-  for(float t=0.0;t<=1.0;t+=0.001){
+  for(float t=0.0;t<=1.0;t+=0.0001){
     for(int i=1;i<n;i++){
       for(int j=0;j<=n-i;j++){
         B[i][j] = B[i-1][j]*(1-t) + B[i-1][j+1]*t;
       }
     }
     v_positions_bez_line[t_idx][k] = glm::vec4(B[n-1][0],1);
-    v_tex_line[t_idx][k]=glm::vec3(0,0,5);
+    v_tex_line[t_idx][k]=glm::vec3(0,0,t_idx+5);
     v_tex_norms[t_idx][k]=glm::vec4(0.0);
     k++;
   }
@@ -309,11 +312,19 @@ void load_payload(std::string filename){
   infile.open(filename);
   infile>>box_idx;
   for(int i=0;i<box_idx;i++){
+    for(int j=0;j<4;j++) v_positions_box[i][j]=0;
+    for(int j=0;j<4;j++) v_colors_box[i][j]=0;
+    for(int j=0;j<4;j++) v_normals_box[i][j]=0;
+    for(int j=0;j<2;j++) tex_coords_box[i][j]=0;
+      tex_coords_box[i][2]=0;
+  }
+
+  for(int i=0;i<box_idx;i++){
     for(int j=0;j<4;j++) infile>>v_positions_box[i][j];
     for(int j=0;j<4;j++) infile>>v_colors_box[i][j];
     for(int j=0;j<4;j++) infile>>v_normals_box[i][j];
-    // for(int j=0;j<2;j++) infile>>tex_coords_box[i][j];
-    //   tex_coords_box[i][2]=0;
+    for(int j=0;j<2;j++) infile>>tex_coords_box[i][j];
+      tex_coords_box[i][2]=0;
   }
 
   infile>>prop_idx;
@@ -359,9 +370,9 @@ void load_payload(std::string filename){
   GLuint tex1=LoadTexture("./images/launchpad1.bmp",2047,2047);
   GLuint tex2=LoadTexture("./images/launchpad2.bmp",408,236);
   GLuint tex_solar=LoadTexture("./images/solar2.bmp",390,220);
-  GLuint tex_refl = LoadTexture("./images/refl1.bmp",1800,1734);
-  GLuint tex_prop = LoadTexture("./images/refl1.bmp",1800,1734);
-  GLuint tex_box = LoadTexture("./images/box1.bmp",1300,1300);
+  GLuint tex_refl = LoadTexture("./images/refl2.bmp",280,280);
+  GLuint tex_prop = LoadTexture("./images/refl2.bmp",280,280);
+  GLuint tex_box = LoadTexture("./images/box2.bmp",2400,1800);
   GLuint tex_extra = LoadTexture("./images/extra.bmp",450,422);
   glBindTexture(GL_TEXTURE_2D, tex1);
 
@@ -371,13 +382,13 @@ void load_payload(std::string filename){
   node8 = new csX75::HNode(node7, num_vertices, tex_extra, tex_extra, v_positions_extra, v_normals_extra, tex_coords_extra, sizeof(v_positions_extra), sizeof(v_normals_extra), sizeof(tex_coords_extra), false);
   node8->change_parameters(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
   node8 = new csX75::HNode(node7, num_vertices, tex_solar, tex_solar, v_positions_solar, v_normals_solar, tex_coords_solar, sizeof(v_positions_solar), sizeof(v_normals_solar), sizeof(tex_coords_solar), false);
-  node8->change_parameters(-1.1, 0.0, -1.0, 0.0, 0.0, 0.0);
+  node8->change_parameters(-1.35, 0.0, -1.0, 0.0, 0.0, 0.0);
   node9 = new csX75::HNode(node8, num_vertices, tex_solar, tex_solar, v_positions_solar, v_normals_solar, tex_coords_solar, sizeof(v_positions_solar), sizeof(v_normals_solar), sizeof(tex_coords_solar), false);
   node9->change_parameters(0.0, 0.0, -0.1, 0.0, 0.0, 0.0);
   node10 = new csX75::HNode(node8, num_vertices, tex_solar, tex_solar, v_positions_solar, v_normals_solar, tex_coords_solar, sizeof(v_positions_solar), sizeof(v_normals_solar), sizeof(tex_coords_solar), false);
   node10->change_parameters(0.0, 0.0, 2.1, 0.0, 180.0, 0.0);
   node11 = new csX75::HNode(node7, num_vertices, tex_refl, tex_refl, v_positions_refl, v_normals_refl, tex_coords_refl, sizeof(v_positions_refl), sizeof(v_normals_refl), sizeof(tex_coords_refl), false);
-  node11->change_parameters(1.1, -1.0, 0.0, 0.0, 0.0, 0.0);
+  node11->change_parameters(1.35, -1.0, 0.0, 0.0, 0.0, 0.0);
   // root_node = curr_node = node7;
 }
 
@@ -586,7 +597,7 @@ void load_scn_file(void){
   std::ifstream infile;
   infile.open(filepath);
   
-  for(int i=0;i<3;i++){
+  for(int i=0;i<4;i++){
     std::string filename;
     infile>>filename;
     if(i==0) load_earth(filename);
@@ -659,7 +670,7 @@ void renderGL(void)
   matrixStack.clear();
 
   // glm::vec3 rocket_pos(1.0);
-  glm::vec3 rocket_pos = glm::vec3(trans[2]*rot[2]*scale[2]*glm::vec4(node5->tx,node5->ty,node5->tz,1.0));
+  glm::vec3 rocket_pos = glm::vec3(trans[3]*rot[3]*scale[3]*glm::vec4(node7->tx,node7->ty,node7->tz,1.0));
 
   //Creating the lookat and the up vectors for the camera
   if(camera==1){
@@ -726,6 +737,10 @@ void renderGL(void)
   node4->render_tree();
   matrixStack.pop_back();
 
+  matrixStack.push_back(view_matrix*trans[3]*rot[3]*scale[3]);
+  node7->render_tree();
+  matrixStack.pop_back();
+
   if(sig==1)
   {
     // std::cout<<"ok\n";
@@ -751,6 +766,78 @@ void renderGL(void)
     std::cout<<"Bezier curve updated\n";
     sig=0;
   }
+
+  std::ifstream infile;
+  infile.open("data/keyframes.txt");
+  for(int i=0;i<4;i++){
+    infile>>t_flag[i]>>t_par[i];
+    if(t_flag[i]==1){
+      if(i==0 || i==1){
+        t_par[i] += 0.0001;
+        int t = t_par[i]*10000;
+        t %= 10000;
+        glm::vec4 pos = v_positions_bez_line[i][t];
+        // for(int i=0;i<3;i++){
+        //   std::cout<<pos[i]<<" ";
+        // }
+        // std::cout<<"\n";
+        if(pos[0]==0 && pos[1]==0 && pos[2]==0) continue;
+        if(i==0) node2e->change_parameters(pos[0],pos[1],pos[2],0,0,0);
+        else node3e->change_parameters(pos[0],pos[1],pos[2],0,0,0);
+      }
+      else if(i==3){
+        // std::cout<<t_par[i]<<"\n";
+        double eps = 0.0001;
+        // if(count<100){
+        //   eps = 0.0001;
+        // }
+        t_par[i] += eps;
+        int t = t_par[i]*10000;
+        t %= 10000;
+        glm::vec4 pos = v_positions_bez_line[i][t];
+        if(pos[0]==0 && pos[1]==0 && pos[2]==0) continue;
+        glm::mat4 translation = glm::translate(glm::mat4(1.0f),glm::vec3(pos[0],pos[1],pos[2]));
+        if(count>200){
+          node6->tx += 0.1;
+          node6->update_matrices();
+        }
+        if(count<400) trans[2] = translation;
+        trans[3] = translation;
+        if(count>400){
+          trans[3] = translation*glm::scale(glm::mat4(1.0),glm::vec3(2,2,2));
+        }
+      }
+      else if(i==2){
+        double eps = 0.0001;
+        // if(count<100){
+        //   eps = 0.0001;
+        // }
+        t_par[i] += eps;
+        int t = t_par[i]*10000;
+        t %= 10000;
+        glm::vec4 pos = v_positions_bez_line[i][t];
+        // for(int i=0;i<3;i++){
+        //   std::cout<<pos[i]<<" ";
+        // }
+        // std::cout<<"\n";
+        if(pos[0]==0 && pos[1]==0 && pos[2]==0) continue;
+        c2_xpos = pos[0];
+        c2_ypos = pos[1];
+        c2_zpos = pos[2];
+        count+=1;
+      }
+    }
+  }
+  infile.close();
+
+  std::ofstream outfile;
+  outfile.open("data/keyframes.txt");
+  for(int i=0;i<4;i++){
+    outfile<<t_flag[i]<<" "<<t_par[i]<<"\n";
+  }
+  outfile.close();
+  
+  
   // for(int i=0;i<bez_idx;i++){
   //   for(int j=0;j<3;j++){
   //     std::cout<<bez_ctrl[i][j]<<" ";
@@ -772,27 +859,15 @@ void renderGL(void)
     }
   }
 
-  if(animation){
-    if(count<500){
-      node2->tx -= 0.015;
-      // node2->ty -= 0.01;
-      node5->tx -= 0.015;
-      // node5->ty -= 0.01;
-      // node2e->change_rot(-0.5);
-      // node3e->change_rot(-0.3);
-      node2->update_matrices();
-      node5->update_matrices();
-      count++;
-    }
-    else{
-      node5->ty += 0.05;
-      node5->update_matrices();
-    }
-  }
-
-  // matrixStack.push_back(view_matrix*trans[3]*rot[3]*scale[3]);
-  // node7->render_tree();
-  // matrixStack.pop_back();
+  // if(animation){
+  //   if(count<500){  
+  //     node2->tx -= 0.015;
+  //     node5->tx -= 0.015;
+  //     node2->update_matrices();
+  //     node5->update_matrices();
+  //     count++;
+  //   }
+  // }
 }
 
 // void renderGL(void){
